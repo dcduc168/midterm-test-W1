@@ -1,5 +1,20 @@
 # midterm-test-W1-writeup
 
+## [Forensics] DIMENSION
+
+### Challenge
+> Yet Another Stego Challenge<br/>
+> [Attachment](https://cnsc.uit.edu.vn/ctf/files/657606fdb5faa98550bbdb665f794a44/attachment.zip?token=eyJ1c2VyX2lkIjo2MTUsInRlYW1faWQiOm51bGwsImZpbGVfaWQiOjEwMH0.ZLzsTA.3lJIkLTyxMF8Pd1n5uvdClmMM6A)
+
+### Solution
+- Ở đây đề bài cho 1 file ảnh với kích thước `0x0` kết hợp cùng tên đề bài mình đoán sẽ sửa 8 byte chiều dài và rộng để khôi phục lại bức ảnh ban đầu.
+- Tool mình sử dụng ở đây là [png-dimensions-bruteforcer](https://github.com/cjharris18/png-dimensions-bruteforcer), điều chỉnh range bruteforce lên xíu ta sẽ thu được kết quả.
+![](2023-07-23-16-14-05.png)
+![](2023-07-23-16-14-49.png)
+```
+Flag: W1{d1meNsiOn_i5_cO0l_r19ht?}
+```
+
 ## [Web] HEAD1
 
 ### Challenge
@@ -96,8 +111,7 @@ Flag: W1{webhook_not_so_bad_huh?}
 ![](2023-07-23-11-09-50.png)
 - Payload cho **Part 2**: `' UNION SELECT flag_5959595959408498_5959595959408498, flag_5959595959408498_5959595959408498 FROM secret_8489498498112318_8489498498112318 -- `
 ![](2023-07-23-11-10-34.png)
-- Ở **Part 3** thì flag là mật khẩu của tài khoản `admin`, ở đây có 2 cách để khai thác đều là `bruteforce`.
-    - **Cách 1**: Xoá cookie đang có để reset `$_SESSION` rồi bruteforce password từ trang `login.php`. Script bruteforce như sau:
+- Ở **Part 3** thì flag là mật khẩu của tài khoản `admin`, ở đây cách để khai thác sẽ là `bruteforce`. Xoá cookie đang có để reset `$_SESSION` rồi bruteforce password từ trang `login.php`. Script bruteforce như sau: *(ban đầu mình bruteforce theo kiểu truyền thống thì độ phức tạp khá lớn, hết giải có người anh chỉ điểm nên mình áp dụng binsearch giúp giảm độ phức tạp đi khá nhiều)*
 ```py
 import requests
 
@@ -138,3 +152,9 @@ while not found:
         if c == "}":
             break
 ```
+![](2023-07-23-15-58-12.png)
+```
+Flag: W1{part1_part2_part③_ⓓⓔⓙⓐⓥⓤ_福🐳😁}
+```
+
+## [Web] SIMPLE STUFF
