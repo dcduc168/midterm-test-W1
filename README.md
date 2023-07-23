@@ -170,4 +170,7 @@ Flag: W1{part1_part2_part③_ⓓⓔⓙⓐⓥⓤ_福🐳😁}
 ![](2023-07-23-17-44-00.png)
  nên ta có thể `LFI` đến endpoint `admin/index.php` thông qua payload `?id=../../../admin/index.php`
  ![](2023-07-23-17-46-46.png)
- - Giải thích sơ qua về hàm `do_xor`, hàm này thực hiện `XOR` 2 chuỗi nếu `$str_2` có độ dài chưa bằng `$str_1` sẽ thêm `=` vào cuối `$str_2` tới khi 2 chuỗi bằng độ dài. Hàm thực hiện `XOR` lần lượt từng ký tự và nối vào `$result` và dùng `-` để ngăn cách giữa các kết quả.
+ - Nội dung của file `/flag.txt` được **XOR** với `username` và gán kết quả vào biến `$_SESSION["id"]`
+ ![](2023-07-23-18-22-18.png)
+ - Giải thích sơ qua về hàm `do_xor`, hàm này thực hiện **XOR** 2 chuỗi nếu `$str_2` có độ dài chưa bằng `$str_1` sẽ thêm `=` vào cuối `$str_2` tới khi 2 chuỗi bằng độ dài. Hàm thực hiện **XOR** lần lượt từng ký tự và nối vào `$result` và dùng `-` để ngăn cách giữa các kết quả.
+- Vậy ở đây cần thực hiện `SQLi` để có được `$_SESSION["id"]` rồi thực hiện `reverse XOR` và lấy được **flag**.
