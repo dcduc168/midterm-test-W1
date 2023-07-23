@@ -158,3 +158,16 @@ Flag: W1{part1_part2_part③_ⓓⓔⓙⓐⓥⓤ_福🐳😁}
 ```
 
 ## [Web] SIMPLE STUFF
+
+### Challenge
+> Trang báo này đăng nhiều tin hay phết, dù là toàn gen từ ChatGPT... nhưng mà khoan đã, hình như trang web này có vấn đề gì đó... Bạn có thể tìm ra vấn đề của trang web này không? <br/>
+> [http://45.122.249.68:20020/](http://45.122.249.68:20020/)<br/>
+> [Attachment](https://cnsc.uit.edu.vn/ctf/files/17d67af31ce59c474ee7f8f8aabc8a39/simple_stuff.zip?token=eyJ1c2VyX2lkIjo2MTUsInRlYW1faWQiOm51bGwsImZpbGVfaWQiOjExNX0.ZL0AJQ.SqIYeU2j6t4AtHEcFTfgnBPKqg8)
+
+### Solution
+- Sơ qua về source code thì ở `Dockerfile` của backend thì ta thấy flag nằm ở `/flag.txt`, `Ctrl+Shift+F` thì thấy nội dung của file được sử dụng ở `admin/index.php` vậy thì trước tiên ta cần truy cập được endpoint này.
+- Ở file `index.php` của backend ta có thể thấy `$_GET["id"]` được nối chuỗi trực tiếp vào `articles/news` và đoạn code còn sử dụng 1 hàm khá nguy hiểm là `include()`
+![](2023-07-23-17-44-00.png)
+ nên ta có thể `LFI` đến endpoint `admin/index.php` thông qua payload `?id=../../../admin/index.php`
+ ![](2023-07-23-17-46-46.png)
+ - Giải thích sơ qua về hàm `do_xor`, hàm này thực hiện `XOR` 2 chuỗi nếu `$str_2` có độ dài chưa bằng `$str_1` sẽ thêm `=` vào cuối `$str_2` tới khi 2 chuỗi bằng độ dài. Hàm thực hiện `XOR` lần lượt từng ký tự và nối vào `$result` và dùng `-` để ngăn cách giữa các kết quả.
