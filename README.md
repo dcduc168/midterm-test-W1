@@ -98,9 +98,9 @@ Flag: W1{webhook_not_so_bad_huh?}
 ### Solution
 - Bài này khá tương tự với 1 bài đã giải trong traning, cơ bản **flag** gồm 3 phần nằm hết ở database.
 ![](2023-07-23-10-56-15.png)
-- Sơ qua về trang web thì ở trang `index.php` sẽ cung cấp cho ta 1 form login và qua file `login.php` khi ta đăng nhập thành công sever sẽ redirect qua `/news.php`. Ở dòng 13 ta có thể thực hiện SQL Injection để bypass qua phần login.
+- Sơ qua về trang web thì ở trang `index.php` sẽ cung cấp cho ta 1 form login và qua file `login.php` khi ta đăng nhập thành công sever sẽ redirect qua `/news.php`. Ở dòng 13 ta có thể thực hiện **SQL Injection** để bypass qua phần login.
 ![](2023-07-23-10-58-50.png)
-- Có 1 chú ý là ở file `news.php`, sever sẽ kiểm tra xem `$_SESSION['username']` của chúng ta có phải là `admin` hay không nên payload để SQLi phần login sẽ như sau:
+- Có 1 chú ý là ở file `news.php`, sever sẽ kiểm tra xem `$_SESSION['username']` của chúng ta có phải là `admin` hay không nên payload để **SQLi** phần login sẽ như sau:
     - `username`: `admin`
     - `password`: `' UNION SELECT username,password FROM users WHERE username='admin`
 - Ở `/news.php` có 1 đoạn code khá *nhạy cảm* giúp chúng ta có thể truyền vào biến `$_GET['name']` qua đó có thể đọc nội dung từ database.
